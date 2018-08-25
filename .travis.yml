@@ -6,3 +6,5 @@ script:
   - echo "Deploy !!"
 install:
   - npm install -g firebase-tools
+after_succes:
+  - firebase deploy — project "school-testing-97c98" — token $FIREBASE_TOKEN
