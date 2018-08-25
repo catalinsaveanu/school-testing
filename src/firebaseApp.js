@@ -10,6 +10,4 @@ const config = {
 
 const FirebaseApp = firebase.initializeApp(config);
 
-console.log('Firebase init:', FirebaseApp.options);
-
 export default { FirebaseApp };
