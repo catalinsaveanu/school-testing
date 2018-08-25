@@ -9,4 +9,4 @@ script:
   - npm run build
 
 after_success:
-  - firebase deploy --project "school-testing-97c98" --token $FIREBASE_TOKEN --non-interactive
+  - firebase deploy --project school-testing-97c98 --token $FIREBASE_TOKEN --non-interactive .
