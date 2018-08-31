@@ -1,13 +1,30 @@
 import Vue from 'vue';
+import Vuelidate from 'vuelidate';
+import Vuetify from 'vuetify';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+
+import 'vuetify/dist/vuetify.min.css';
+import 'material-design-icons-iconfont/dist/material-design-icons.css';
+
+import './firebase/firebaseInit';
 import App from './App.vue';
-import router from './router';
-import store from './store';
-import './firebaseApp';
+import router from './router/';
+import store from './store/';
 
 Vue.config.productionTip = false;
+Vue.use(Vuetify);
+Vue.use(Vuelidate);
 
-new Vue({
-  router,
-  store,
-  render: h => h(App),
-}).$mount('#app');
+let app;
+
+firebase.auth().onAuthStateChanged(() => {
+  if (!app) {
+    /* eslint-disable no-new */
+    app = new Vue({
+      router,
+      store,
+      render: h => h(App)
+    }).$mount('#app');
+  }
+});
