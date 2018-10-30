@@ -5,7 +5,7 @@ export default {
   setUser(context, user) {
     context.commit('setUser', user);
   },
-  async signup({ commit }, user) {
+  signup({ commit }, user) {
     return firebase.auth().createUserWithEmailAndPassword(user.email, user.password).then(
       (firebaseUser) => {
         const db = firebase.firestore();
@@ -37,6 +37,18 @@ export default {
     ).then((doc) => {
       commit('setUser', doc.data());
     });
+  },
+  getTests({ commit }) {
+    const tests = [],
+      db = firebase.firestore();
+
+    db.collection('tests').get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        tests.push(doc.data());
+      });
+    });
+
+    commit('setTests', tests);
   }
 };
 

@@ -2,6 +2,10 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import firebaseConfig from './firebaseConfig';
 
-const firebaseApp = firebase.initializeApp(firebaseConfig);
+const firebaseApp = firebase.initializeApp(firebaseConfig),
+  firestore = firebaseApp.firestore(),
+  settings = { timestampsInSnapshots: true };
 
-export default firebaseApp.firestore();
+firestore.settings(settings);
+
+export default firestore;
