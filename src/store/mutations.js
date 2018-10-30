@@ -3,6 +3,6 @@ export default {
     state.user = user;
   },
   setTests(state, tests) {
-    state.tests = tests;
+    state.tests = [...tests];
   }
 };

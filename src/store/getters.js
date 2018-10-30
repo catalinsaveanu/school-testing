@@ -3,6 +3,7 @@ export default {
     return state.user;
   },
   getTests(state) {
+    console.log('state:', state);
     return state.tests;
   }
 };

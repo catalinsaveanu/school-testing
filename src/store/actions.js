@@ -38,17 +38,18 @@ export default {
       commit('setUser', doc.data());
     });
   },
-  getTests({ commit }) {
-    const tests = [],
-      db = firebase.firestore();
+  loadTests({ commit }) {
+    // eslint-disable-next-line
+    let tests = [];
+    const db = firebase.firestore();
 
     db.collection('tests').get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         tests.push(doc.data());
       });
-    });
 
-    commit('setTests', tests);
+      commit('setTests', tests);
+    });
   }
 };
 

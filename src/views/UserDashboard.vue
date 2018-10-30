@@ -41,7 +41,7 @@ export default {
       });
     }
 
-    this.$store.dispatch('getTests');
+    this.$store.dispatch('loadTests');
   },
   data() {
     return {
