@@ -1,4 +1,9 @@
 export default {
   user: {},
-  tests: []
+  tests: [],
+  alert: {
+    show: false,
+    color: '#FF0000',
+    message: ''
+  }
 };

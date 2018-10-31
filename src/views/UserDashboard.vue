@@ -12,7 +12,21 @@
           <td class="text-xs-right">{{ props.item.subject }}</td>
           <td class="text-xs-right">{{ props.item.description }}</td>
           <td class="text-xs-right">{{ props.item.active }}</td>
-          <td class="text-xs-right"></td>
+          <td class="text-xs-right">
+            <v-icon
+              small
+              class="mr-2"
+              @click="editItem(props.item)"
+            >
+              edit
+            </v-icon>
+            <v-icon
+              small
+              @click="deleteItem(props.item)"
+            >
+              delete
+            </v-icon>
+          </td>
         </template>
         <v-alert slot="no-results" :value="true" color="error" icon="warning">
           Your search for "{{ search }}" found no results.
@@ -69,6 +83,11 @@ export default {
       firebase.auth().signOut().then(() => {
         this.$router.replace('login');
       });
+    },
+    deleteItem(item) {
+      if (confirm('Esti sigur ca doresti sa stergi acest test?')) {
+        this.$store.dispatch('deleteTest', item);
+      }
     }
   }
 };

@@ -4,5 +4,8 @@ export default {
   },
   setTests(state, tests) {
     state.tests = [...tests];
+  },
+  setAlert(state, alert) {
+    state.alert = alert;
   }
 };

@@ -45,11 +45,34 @@ export default {
 
     db.collection('tests').get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
-        tests.push(doc.data());
+        tests.push({ id: doc.id, ...doc.data() });
       });
 
       commit('setTests', tests);
     });
+  },
+  deleteTest({ commit }, test) {
+    const db = firebase.firestore();
+
+    db.collection('tests').doc(test.id).set({
+      deleted: true
+    }).then(() => {
+      commit('setAlert', {
+        show: true,
+        color: '#00FF00',
+        message: 'Testul a fost sters!'
+      });
+    // eslint-disable-next-line
+    }).catch((error) => {
+      commit('setAlert', {
+        show: true,
+        color: '#FF0000',
+        message: `Eroare! Testul nu a fost sters! ${error}`
+      });
+    });
+  },
+  updateAlert({ commit }, alert) {
+    commit('setAlert', alert);
   }
 };
 
