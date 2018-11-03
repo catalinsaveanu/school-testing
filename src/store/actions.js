@@ -55,6 +55,7 @@ export default {
     const db = firebase.firestore();
 
     db.collection('tests').doc(test.id).set({
+      ...test,
       deleted: true
     }).then(() => {
       commit('setAlert', {

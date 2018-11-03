@@ -2,7 +2,7 @@
   <v-flex>
     <v-card>
       <v-card-title>
-        Lista teste
+        <v-btn color="success" @click="addTest()">Adauga test</v-btn>
         <v-spacer></v-spacer>
         <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
       </v-card-title>
@@ -42,6 +42,8 @@
 <script>
 import firebase from 'firebase/app';
 import 'firebase/firestore';
+import confirm from 'vuetify';
+import router from './../router/';
 
 export default {
   name: 'UserDashboard',
@@ -75,7 +77,7 @@ export default {
       return this.$store.getters.getUser;
     },
     tests() {
-      return this.$store.getters.getTests;
+      return this.$store.getters.getTests.filter(test => !test.deleted);
     }
   },
   methods: {
@@ -88,6 +90,10 @@ export default {
       if (confirm('Esti sigur ca doresti sa stergi acest test?')) {
         this.$store.dispatch('deleteTest', item);
       }
+    },
+    addTest() {
+      console.log('addTest:');
+      router.push('addTest');
     }
   }
 };
