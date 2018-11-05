@@ -29,20 +29,17 @@
             v-model="subject"
             :items="subjects"
             label="Materia"
-            data-vv-name="subject"
             required
           ></v-select>
           <v-text-field
             v-model="description"
             label="Descriere"
-            data-vv-name="description"
             required
           ></v-text-field>
           <v-checkbox
             v-model="active"
             value="true"
             label="Activ"
-            data-vv-name="active"
             type="active"
           ></v-checkbox>
         </v-flex>
@@ -54,10 +51,22 @@
               top
               right
               color="pink"
+              @click="addQuestion"
             >
               <v-icon>add</v-icon>
             </v-btn>
         </div>
+        <v-flex>
+        <Problem
+            v-for="(problem, index) in problems"
+            :key="index"
+            :question="problem.question"
+            :answers="problem.answers"
+            :correct-answer="problem.correctAnswer"
+            :problem-number="problem.problemNumber"
+        >
+        </Problem>
+        </v-flex>
         <v-spacer column></v-spacer>
         <v-flex>
           <v-btn color="error" @click="submit">Renunta</v-btn>
@@ -70,9 +79,13 @@
 
 <script>
 import 'firebase/firestore';
+import Problem from './../components/Problem.vue';
 
 export default {
   name: 'UserDashboard',
+  components: {
+    Problem
+  },
   mounted() {
   },
   data() {
@@ -83,12 +96,21 @@ export default {
       subjects: ['romana', 'matematica'],
       description: '',
       active: false,
-      submitStatus: null
+      submitStatus: null,
+      problems: []
     };
   },
   computed: {
   },
   methods: {
+    addQuestion() {
+      this.problems.push({
+        question: 'Intrebarea...',
+        answers: ['', '', '', ''],
+        correctAnswer: 0,
+        problemNumber: this.problems.length + 1
+      });
+    },
     submit() {
     }
   }
