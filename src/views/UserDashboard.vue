@@ -8,7 +8,7 @@
       </v-card-title>
       <v-data-table :headers="headers" :items="tests" :search="search">
         <template slot="items" slot-scope="props">
-          <td class="text-xs-right">{{ props.item.date }}</td>
+          <td class="text-xs-right">{{ formatDate(props.item.date) }}</td>
           <td class="text-xs-right">{{ props.item.subject }}</td>
           <td class="text-xs-right">{{ props.item.description }}</td>
           <td class="text-xs-right">{{ props.item.active }}</td>
@@ -28,6 +28,9 @@
             </v-icon>
           </td>
         </template>
+        <template slot="no-data">
+          Nu a fost adaugat nici un test. Apasa pe butonul de mai sus pentru a adauga test.
+        </template>
         <v-alert slot="no-results" :value="true" color="error" icon="warning">
           Your search for "{{ search }}" found no results.
         </v-alert>
@@ -42,7 +45,6 @@
 <script>
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-import confirm from 'vuetify';
 import router from './../router/';
 
 export default {
@@ -52,9 +54,12 @@ export default {
       const { currentUser } = firebase.auth(),
         db = firebase.firestore();
 
-      db.collection('users').doc(currentUser.uid).get().then((doc) => {
-        this.$store.dispatch('setUser', doc.data());
-      });
+      db.collection('users')
+        .doc(currentUser.uid)
+        .get()
+        .then((doc) => {
+          this.$store.dispatch('setUser', doc.data());
+        });
     }
 
     this.$store.dispatch('loadTests');
@@ -77,23 +82,35 @@ export default {
       return this.$store.getters.getUser;
     },
     tests() {
-      return this.$store.getters.getTests.filter(test => !test.deleted);
+      // eslint-disable-next-line
+      return this.$store.getters.getTests.filter((test) => !test.deleted);
     }
   },
   methods: {
+    formatDate(date) {
+      return date
+        .toDate()
+        .toISOString()
+        .replace(/T.*/g, '');
+    },
     logout() {
-      firebase.auth().signOut().then(() => {
-        this.$router.replace('login');
-      });
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          this.$router.replace('login');
+        });
     },
     deleteItem(item) {
       if (confirm('Esti sigur ca doresti sa stergi acest test?')) {
         this.$store.dispatch('deleteTest', item);
       }
     },
+    editItem(test) {
+      router.push(`test/${test.id}`);
+    },
     addTest() {
-      console.log('addTest:');
-      router.push('addTest');
+      router.push('test');
     }
   }
 };

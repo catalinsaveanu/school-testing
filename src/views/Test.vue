@@ -139,7 +139,7 @@
         <v-spacer column></v-spacer>
         <v-flex>
           <v-btn color="error" @click="cancel">Renunta</v-btn>
-          <v-btn color="success" @click="submit">Adauga</v-btn>
+          <v-btn color="success" @click="submit">{{submitTextBtn}}</v-btn>
         </v-flex>
       </v-layout>
     </form>
@@ -148,6 +148,7 @@
 
 <script>
 import 'firebase/firestore';
+import firebase from 'firebase/app';
 import confirm from 'vuetify';
 
 import router from './../router/';
@@ -155,10 +156,26 @@ import router from './../router/';
 export default {
   name: 'UserDashboard',
   components: {},
-  mounted() {},
+  mounted() {
+    if (this.testId) {
+      // eslint-disable-next-line
+      const currentTest = this.$store.getters.getTests.find(
+        (test) => test.id === this.testId
+        // eslint-disable-next-line
+      );
+
+      this.date = this.formatDate(currentTest.date);
+      this.subject = currentTest.subject;
+      this.description = currentTest.description;
+      this.active = currentTest.active;
+      this.problems = currentTest.problems;
+      this.submitTextBtn = 'Modifica';
+    }
+  },
   data() {
     return {
       menu1: false,
+      testId: this.$route.params.id,
       date: new Date().toISOString().substr(0, 10),
       subject: 'romana',
       subjects: ['romana', 'matematica'],
@@ -167,6 +184,7 @@ export default {
       submitStatus: null,
       problems: [],
       dialog: false,
+      submitTextBtn: 'Adauga',
       headers: [
         {
           text: 'Numar',
@@ -219,6 +237,12 @@ export default {
     }
   },
   methods: {
+    formatDate(date) {
+      return date
+        .toDate()
+        .toISOString()
+        .replace(/T.*/g, '');
+    },
     editItem(item) {
       this.editedIndex = this.problems.indexOf(item);
       this.editedItem = Object.assign({}, item);
@@ -260,22 +284,11 @@ export default {
     },
 
     submit() {
-      // eslint-disable-next-line
-      const problems = this.problems.map((problem) => {
-          return {
-            correct_answer: problem.correctAnswer,
-            question: problem.question,
-            answers: [
-              problem.answerA,
-              problem.answerB,
-              problem.answerC,
-              problem.answerD
-            ]
-          };
-        }),
+      const problems = [...this.problems],
         test = {
+          id: this.testId,
           active: this.active,
-          date: this.date,
+          date: firebase.firestore.Timestamp.fromDate(new Date(this.date)),
           deleted: false,
           description: this.description,
           subject: this.subject,

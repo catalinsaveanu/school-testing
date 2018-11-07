@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 import UserDashboard from '@/views/UserDashboard.vue';
-import AddTest from '@/views/AddTest.vue';
+import Test from '@/views/Test.vue';
 import UserLogin from '@/views/UserLogin.vue';
 import UserSignUp from '@/views/UserSignUp.vue';
 import firebase from 'firebase/app';
@@ -40,9 +40,17 @@ const router = new Router({
       }
     },
     {
-      path: '/addtest',
-      name: 'AddTest',
-      component: AddTest,
+      path: '/test',
+      name: 'Test',
+      component: Test,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/test/:id',
+      name: 'Test',
+      component: Test,
       meta: {
         requiresAuth: true
       }
@@ -52,7 +60,8 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   const { currentUser } = firebase.auth(),
-    requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+    // eslint-disable-next-line
+    requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
 
   if (requiresAuth && !currentUser) {
     next('login');

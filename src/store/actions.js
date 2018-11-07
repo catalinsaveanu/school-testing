@@ -74,7 +74,7 @@ export default {
     let actionRef;
 
     if (test.id) {
-      actionRef = testCollection.update(test);
+      actionRef = testCollection.doc(test.id).update(test);
     } else {
       actionRef = testCollection.add(test);
     }
@@ -106,6 +106,8 @@ export default {
         deleted: true
       })
       .then(() => {
+        commit('deleteTest', test);
+
         commit('setAlert', {
           show: true,
           color: '#00FF00',

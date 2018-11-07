@@ -5,9 +5,12 @@ export default {
   setTests(state, tests) {
     state.tests = [...tests];
   },
+  deleteTest(state, test) {
+    state.tests = [...state.tests.filter((element) => element.id !== test.id)];
+  },
   updateTest(state, test) {
     state.tests = [
-      ...state.tests.filter(element => element.id !== test.id),
+      ...state.tests.filter((element) => element.id !== test.id),
       test
     ];
   },
