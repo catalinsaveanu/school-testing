@@ -3,8 +3,10 @@ export default {
     return state.user;
   },
   getTests(state) {
-    console.log('state:', state);
     return state.tests;
+  },
+  getTest: (state) => (testId) => {
+    return state.tests.find((test) => test.id === testId) || {};
   },
   getAlert(state) {
     return state.alert;

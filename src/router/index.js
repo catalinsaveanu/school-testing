@@ -3,8 +3,10 @@ import Router from 'vue-router';
 
 import UserDashboard from '@/views/UserDashboard.vue';
 import Test from '@/views/Test.vue';
+import TakeTest from '@/views/TakeTest.vue';
 import UserLogin from '@/views/UserLogin.vue';
 import UserSignUp from '@/views/UserSignUp.vue';
+
 import firebase from 'firebase/app';
 
 Vue.use(Router);
@@ -40,7 +42,7 @@ const router = new Router({
       }
     },
     {
-      path: '/test',
+      path: '/test/:id?',
       name: 'Test',
       component: Test,
       meta: {
@@ -48,9 +50,9 @@ const router = new Router({
       }
     },
     {
-      path: '/test/:id',
-      name: 'Test',
-      component: Test,
+      path: '/taketest/:id',
+      name: 'TakeTest',
+      component: TakeTest,
       meta: {
         requiresAuth: true
       }

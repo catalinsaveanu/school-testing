@@ -9,23 +9,21 @@ export default {
     return firebase
       .auth()
       .createUserWithEmailAndPassword(user.email, user.password)
-      .then(
-        (firebaseUser) => {
-          const db = firebase.firestore();
+      .then((firebaseUser) => {
+        const db = firebase.firestore();
 
-          return db
-            .collection('users')
-            .doc(firebaseUser.user.uid)
-            .set({
-              email: user.email,
-              name: user.name,
-              role: user.role
-            });
-        },
-        (err) => {
-          console.log(err);
-        }
-      )
+        return db
+          .collection('users')
+          .doc(firebaseUser.user.uid)
+          .set({
+            email: user.email,
+            name: user.name,
+            role: user.role
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+      })
       .then((doc) => {
         console.log(doc);
         commit('setUser', user);
@@ -34,20 +32,23 @@ export default {
   login({ commit }, user) {
     return firebase
       .auth()
-      .signInWithEmailAndPassword(user.email, user.password)
-      .then(
-        (firebaseUser) => {
-          const db = firebase.firestore();
+      .setPersistence(firebase.auth.Auth.Persistence.SESSION)
+      .then(() => {
+        return firebase
+          .auth()
+          .signInWithEmailAndPassword(user.email, user.password);
+      })
+      .then((firebaseUser) => {
+        const db = firebase.firestore();
 
-          return db
-            .collection('users')
-            .doc(firebaseUser.user.uid)
-            .get();
-        },
-        (err) => {
-          console.log(err);
-        }
-      )
+        return db
+          .collection('users')
+          .doc(firebaseUser.user.uid)
+          .get();
+      })
+      .catch((err) => {
+        console.log(err);
+      })
       .then((doc) => {
         commit('setUser', doc.data());
       });
