@@ -3,6 +3,7 @@ node_js:
   - '8.12.0'
 
 before_script:
+  - npm prune
   - npm install -g firebase-tools
 
 script:
