@@ -48,7 +48,7 @@
         </v-alert>
       </v-data-table>
       <v-card-actions class="login-btns-container">
-        <v-btn color="primary" @click="logout">Logout</v-btn>
+        <v-btn color="primary" @click="logout">Deconectare</v-btn>
       </v-card-actions>
     </v-card>
   </v-flex>
@@ -70,7 +70,10 @@ export default {
         .doc(currentUser.uid)
         .get()
         .then((doc) => {
-          this.$store.dispatch('setUser', doc.data());
+          this.$store.dispatch('setUser', {
+            id: currentUser.uid,
+            ...doc.data()
+          });
         });
     }
 

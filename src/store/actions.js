@@ -25,8 +25,10 @@ export default {
         console.log(err);
       })
       .then((doc) => {
-        console.log(doc);
-        commit('setUser', user);
+        commit('setUser', {
+          id: doc.id,
+          ...user
+        });
       });
   },
   login({ commit }, user) {
@@ -50,7 +52,10 @@ export default {
         console.log(err);
       })
       .then((doc) => {
-        commit('setUser', doc.data());
+        commit('setUser', {
+          id: doc.id,
+          ...doc.data()
+        });
       });
   },
   loadTests({ commit }) {
@@ -87,13 +92,49 @@ export default {
           color: '#00FF00',
           message: 'Testul a fost salvat!'
         });
-        // eslint-disable-next-line
       })
       .catch((error) => {
         commit('setAlert', {
           show: true,
           color: '#FF0000',
           message: `Eroare! Testul nu a fost salvat! ${error}`
+        });
+      });
+  },
+  setProblemAnswer({ commit }, { userId, testId, answerObj, correctAnswers }) {
+    const db = firebase.firestore(),
+      resultsCollection = db.collection('results');
+
+    let docRef = resultsCollection.doc(`${userId}_${testId}`);
+
+    return docRef
+      .get()
+      .then((doc) => {
+        let answers = new Array(correctAnswers.length).fill(-1);
+
+        if (doc.exists) {
+          answers = doc.data().answers;
+        }
+
+        answers[answerObj.problemIndex] = answerObj.value;
+
+        const completeAnswers = answers.filter((answer) => answer === -1)
+            .length,
+          test = {
+            testId,
+            userId,
+            answers,
+            progress: Math.floor((1 - completeAnswers / answers.length) * 100),
+            correctAnswers
+          };
+
+        return docRef.set(test);
+      })
+      .catch((error) => {
+        commit('setAlert', {
+          show: true,
+          color: '#FF0000',
+          message: `Eroare! Rezultatul nu a fost salvat! ${error}`
         });
       });
   },

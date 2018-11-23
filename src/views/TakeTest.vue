@@ -21,7 +21,7 @@
           :key="index"
         >
           <v-card-title class="title font-weight-regular justify-space-between">
-            <span>{{ problem.question }}</span>
+            <span class="question-title">{{ problem.question }}</span>
           </v-card-title>
 
           <v-layout row wrap>
@@ -29,7 +29,14 @@
               class="xs12 md6 px-1"
               v-for="(value, index2) in DEFAULT_ANSWERS"
               :key="`answer-${index2}`">
-              <v-btn block large class="answer-button" color="primary" bold round>
+              <v-btn
+                block
+                large
+                class="answer-button"
+                :color="answerColor(index2)"
+                bold
+                round
+                @click="answerClicked(index2)">
                 <span class="answer-button__letter">{{value}}</span> {{problem[`answer${value}`]}}
               </v-btn>
             </v-flex>
@@ -43,6 +50,7 @@
           fab
           small
           dark
+          :disabled="currentProblem === 0"
           @click="prev"
         >
           <v-icon>chevron_left</v-icon>
@@ -54,6 +62,7 @@
           fab
           small
           dark
+          :disabled="currentProblem === problems.length - 1"
           @click="next">
           <v-icon dark>chevron_right</v-icon>
         </v-btn>
@@ -82,7 +91,10 @@ export default {
         .doc(currentUser.uid)
         .get()
         .then((doc) => {
-          this.$store.dispatch('setUser', doc.data());
+          this.$store.dispatch('setUser', {
+            id: currentUser.uid,
+            ...doc.data()
+          });
           this.$store.dispatch('loadTests');
         });
     }
@@ -90,7 +102,8 @@ export default {
   data() {
     return {
       currentProblem: 0,
-      DEFAULT_ANSWERS: ['A', 'B', 'C', 'D']
+      DEFAULT_ANSWERS: ['A', 'B', 'C', 'D'],
+      userAnswer: -1
     };
   },
   computed: {
@@ -107,15 +120,48 @@ export default {
       if (this.currentProblem > this.problems.length - 1) {
         this.currentProblem = this.problems.length - 1;
       }
+      this.userAnswer = -1;
     },
     prev() {
       this.currentProblem = this.currentProblem - 1;
       if (this.currentProblem < 0) {
         this.currentProblem = 0;
       }
+      this.userAnswer = -1;
     },
     goBack() {
       router.go(-1);
+    },
+    answerClicked(answer) {
+      const testId = this.currentTest.id,
+        problemIndex = this.currentProblem,
+        totalProblems = this.problems.length,
+        userId = this.$store.getters.getUser.id,
+        correctAnswers = this.problems.map((problem) => problem.correctAnswer),
+        answerObj = {
+          problemIndex,
+          value: answer
+        },
+        sendData = {
+          userId,
+          testId,
+          answerObj,
+          correctAnswers
+        };
+
+      this.$store.dispatch('setProblemAnswer', sendData).then(() => {
+        this.userAnswer = answer;
+      });
+    },
+    answerColor(answer) {
+      if (this.userAnswer === answer) {
+        return answer ===
+          this.currentTest.problems[this.currentProblem].correctAnswer
+          ? 'success'
+          : 'error';
+      } else {
+        return 'primary';
+      }
     }
   }
 };
@@ -134,6 +180,12 @@ export default {
 .answer-button {
   font-weight: bold;
 }
+.answer-button--wrong {
+  background: #dc3522;
+}
+.answer-button--correct {
+  background: #468966;
+}
 .answer-button__letter {
   background: #2b4550;
   display: inline-block;
@@ -148,5 +200,8 @@ export default {
 }
 .question-container {
   padding: 50px;
+}
+.question-title {
+  font-size: 27px;
 }
 </style>
