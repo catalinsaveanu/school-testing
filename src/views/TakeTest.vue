@@ -1,15 +1,20 @@
 <template>
-<v-flex xs12 fill-height>
+<v-flex xs12 fill-height class="page-container">
   <v-card
       class="mx-auto fill-height"
       max-width="1200"
     >
     <v-layout justify-space-between column fill-height>
-      <v-btn color="primary" fab small dark>
+      <v-btn
+        color="primary"
+        fab
+        small
+        dark
+        @click="goBack">
         <v-icon>chevron_left</v-icon>
       </v-btn>
       <v-window
-        class="fill-height"
+        class="fill-height align-center d-flex question-container"
         v-model="currentProblem">
         <v-window-item
           v-for="(problem, index) in problems"
@@ -21,12 +26,12 @@
 
           <v-layout row wrap>
             <v-flex
-              class="xs6"
+              class="xs12 md6 px-1"
               v-for="(value, index2) in DEFAULT_ANSWERS"
               :key="`answer-${index2}`">
-              <v-card dark color="secondary">
-                <v-card-text class="px-0">{{value}}) {{problem[`answer${value}`]}}</v-card-text>
-              </v-card>
+              <v-btn block large class="answer-button" color="primary" bold round>
+                <span class="answer-button__letter">{{value}}</span> {{problem[`answer${value}`]}}
+              </v-btn>
             </v-flex>
           </v-layout>
         </v-window-item>
@@ -108,6 +113,9 @@ export default {
       if (this.currentProblem < 0) {
         this.currentProblem = 0;
       }
+    },
+    goBack() {
+      router.go(-1);
     }
   }
 };
@@ -118,6 +126,27 @@ export default {
   padding: 0 10px;
 }
 .v-card__actions {
-  background: #fff8e1;
+  background: #e2e6d8;
+}
+.theme--light.v-card {
+  background: #fcfff5;
+}
+.answer-button {
+  font-weight: bold;
+}
+.answer-button__letter {
+  background: #2b4550;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  text-align: center;
+  font-weight: bold;
+  line-height: 30px;
+  left: -20px;
+  position: absolute;
+}
+.question-container {
+  padding: 50px;
 }
 </style>

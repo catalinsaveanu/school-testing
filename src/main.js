@@ -6,6 +6,7 @@ import 'firebase/auth';
 
 import 'vuetify/dist/vuetify.min.css';
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
+import theme from './theme';
 
 import './firebase/firebaseInit';
 import App from './App.vue';
@@ -13,7 +14,7 @@ import router from './router/';
 import store from './store/';
 
 Vue.config.productionTip = false;
-Vue.use(Vuetify);
+Vue.use(Vuetify, { theme });
 Vue.use(Vuelidate);
 
 let app;
@@ -24,7 +25,7 @@ firebase.auth().onAuthStateChanged(() => {
     app = new Vue({
       router,
       store,
-      render: h => h(App)
+      render: (h) => h(App)
     }).$mount('#app');
   }
 });
