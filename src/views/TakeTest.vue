@@ -1,75 +1,61 @@
 <template>
-<v-flex xs12 fill-height class="page-container">
-  <v-card
-      class="mx-auto fill-height"
-      max-width="1200"
-    >
-    <v-layout justify-space-between column fill-height>
-      <v-btn
-        color="primary"
-        fab
-        small
-        dark
-        @click="goBack">
-        <v-icon>chevron_left</v-icon>
-      </v-btn>
-      <v-window
-        class="fill-height align-center d-flex question-container"
-        v-model="currentProblem">
-        <v-window-item
-          v-for="(problem, index) in problems"
-          :key="index"
-        >
-          <v-card-title class="title font-weight-regular justify-space-between">
-            <span class="question-title">{{ problem.question }}</span>
-          </v-card-title>
-
-          <v-layout row wrap>
-            <v-flex
-              class="xs12 md6 px-1"
-              v-for="(value, index2) in DEFAULT_ANSWERS"
-              :key="`answer-${index2}`">
-              <v-btn
-                block
-                large
-                class="answer-button"
-                :color="answerColor(index2)"
-                bold
-                round
-                @click="answerClicked(index2)">
-                <span class="answer-button__letter">{{value}}</span> {{problem[`answer${value}`]}}
-              </v-btn>
-            </v-flex>
-          </v-layout>
-        </v-window-item>
-      </v-window>
-
-      <v-card-actions class="justify-center">
-        <v-btn
-          color="primary"
-          fab
-          small
-          dark
-          :disabled="currentProblem === 0"
-          @click="prev"
-        >
+  <v-flex xs12 fill-height class="page-container">
+    <v-card class="mx-auto fill-height" max-width="1200">
+      <v-layout justify-space-between column fill-height>
+        <v-btn color="primary" fab small dark @click="goBack">
           <v-icon>chevron_left</v-icon>
         </v-btn>
-        <div class="current-problem-position">
-          {{currentProblem + 1}} din {{problems.length}}
-        </div>
-        <v-btn color="primary"
-          fab
-          small
-          dark
-          :disabled="currentProblem === problems.length - 1"
-          @click="next">
-          <v-icon dark>chevron_right</v-icon>
-        </v-btn>
-      </v-card-actions>
-    </v-layout>
-  </v-card>
-</v-flex>
+        <v-window
+          class="fill-height align-center d-flex question-container"
+          v-model="currentProblem"
+        >
+          <v-window-item v-for="(problem, index) in problems" :key="index">
+            <v-card-title class="title font-weight-regular justify-space-between">
+              <span class="question-title">{{ problem.question }}</span>
+            </v-card-title>
+
+            <v-layout row wrap>
+              <v-flex
+                class="xs12 md6 px-1"
+                v-for="(value, index2) in DEFAULT_ANSWERS"
+                :key="`answer-${index2}`"
+              >
+                <v-btn
+                  block
+                  large
+                  class="answer-button"
+                  :color="answerColor(index2)"
+                  bold
+                  round
+                  @click="answerClicked(index2)"
+                >
+                  <span class="answer-button__letter">{{value}}</span>
+                  {{problem[`answer${value}`]}}
+                </v-btn>
+              </v-flex>
+            </v-layout>
+          </v-window-item>
+        </v-window>
+
+        <v-card-actions class="justify-center">
+          <v-btn color="primary" fab small dark :disabled="currentProblem === 0" @click="prev">
+            <v-icon>chevron_left</v-icon>
+          </v-btn>
+          <div class="current-problem-position">{{currentProblem + 1}} din {{problems.length}}</div>
+          <v-btn
+            color="primary"
+            fab
+            small
+            dark
+            :disabled="currentProblem === problems.length - 1"
+            @click="next"
+          >
+            <v-icon dark>chevron_right</v-icon>
+          </v-btn>
+        </v-card-actions>
+      </v-layout>
+    </v-card>
+  </v-flex>
 </template>
 
 <script>
@@ -83,30 +69,29 @@ export default {
   name: 'UserDashboard',
   components: {},
   mounted() {
-    if (!this.$store.getters.getUser.name) {
-      const { currentUser } = firebase.auth(),
-        db = firebase.firestore();
+    const testId = this.$route.params.id,
+      userId = this.$store.getters.getUser.id,
+      problems = this.$store.getters.getTest(testId).problems,
+      correctAnswers = this.getCorrectAnswers(problems),
+      sendData = {
+        userId,
+        testId,
+        correctAnswers
+      };
 
-      db.collection('users')
-        .doc(currentUser.uid)
-        .get()
-        .then((doc) => {
-          this.$store.dispatch('setUser', {
-            id: currentUser.uid,
-            ...doc.data()
-          });
-          this.$store.dispatch('loadTests');
-        });
-    }
+    this.$store.dispatch('getResultToTest', sendData);
   },
   data() {
     return {
       currentProblem: 0,
       DEFAULT_ANSWERS: ['A', 'B', 'C', 'D'],
-      userAnswer: -1
+      userAnswers: []
     };
   },
   computed: {
+    resultToTest() {
+      return this.$store.state.resultToTest;
+    },
     currentTest() {
       return this.$store.getters.getTest(this.$route.params.id);
     },
@@ -115,47 +100,59 @@ export default {
     }
   },
   methods: {
+    getCorrectAnswers(problems = []) {
+      let answers = [];
+
+      problems.forEach((problem) => {
+        answers.push(problem.correctAnswer);
+      });
+
+      return answers;
+    },
     next() {
       this.currentProblem = this.currentProblem + 1;
       if (this.currentProblem > this.problems.length - 1) {
         this.currentProblem = this.problems.length - 1;
       }
-      this.userAnswer = -1;
+      this.userAnswers = -1;
     },
     prev() {
       this.currentProblem = this.currentProblem - 1;
       if (this.currentProblem < 0) {
         this.currentProblem = 0;
       }
-      this.userAnswer = -1;
+      this.userAnswers = -1;
     },
     goBack() {
       router.go(-1);
     },
     answerClicked(answer) {
-      const testId = this.currentTest.id,
-        problemIndex = this.currentProblem,
-        totalProblems = this.problems.length,
-        userId = this.$store.getters.getUser.id,
-        correctAnswers = this.problems.map((problem) => problem.correctAnswer),
-        answerObj = {
-          problemIndex,
-          value: answer
-        },
-        sendData = {
-          userId,
-          testId,
-          answerObj,
-          correctAnswers
-        };
+      let answers = this.resultToTest.answers,
+        initialAnswers = this.resultToTest.initialAnswers;
 
-      this.$store.dispatch('setProblemAnswer', sendData).then(() => {
-        this.userAnswer = answer;
-      });
+      if (initialAnswers[this.currentProblem] === -1) {
+        initialAnswers[this.currentProblem] = answer;
+      }
+
+      answers[this.currentProblem] = answer;
+
+      const sendData = {
+        ...this.resultToTest,
+        answers,
+        initialAnswers
+      };
+
+      this.$store.dispatch('setResultToTest', sendData);
     },
     answerColor(answer) {
-      if (this.userAnswer === answer) {
-        return answer ===
+      if (Object.keys(this.resultToTest).length === 0) {
+        return 'primary';
+      }
+
+      const currentAnswer = this.resultToTest.answers[this.currentProblem];
+
+      if (currentAnswer === answer) {
+        return currentAnswer ===
           this.currentTest.problems[this.currentProblem].correctAnswer
           ? 'success'
           : 'error';

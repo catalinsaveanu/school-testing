@@ -14,6 +14,9 @@ export default {
       test
     ];
   },
+  setResultToTest(state, test) {
+    state.resultToTest = { ...test };
+  },
   setAlert(state, alert) {
     state.alert = alert;
   }

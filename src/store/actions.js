@@ -58,19 +58,57 @@ export default {
         });
       });
   },
-  loadTests({ commit }) {
+  loadTests({ commit, state }) {
     // eslint-disable-next-line
-    let tests = [];
-    const db = firebase.firestore();
+    const db = firebase.firestore(),
+      user = state.user;
 
-    db.collection('tests')
+    let tests = [],
+      docs = [],
+      testRef = db.collection('tests').where('deleted', '==', false),
+      resultsCollection = db.collection('results');
+
+    if (user.role !== 'admin') {
+      testRef = testRef.where('active', '==', true);
+    }
+
+    testRef
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          tests.push({ id: doc.id, ...doc.data() });
+          tests.push({ id: doc.id, grade: 0, progress: 0, ...doc.data() });
+
+          if (user.role !== 'admin') {
+            docs.push(resultsCollection.doc(`${user.id}_${doc.id}`).get());
+          }
         });
 
-        commit('setTests', tests);
+        if (docs.length === 0) {
+          commit('setTests', tests);
+          return;
+        } else {
+          return Promise.all(docs);
+        }
+      })
+      .then((querySnapshot) => {
+        if (querySnapshot) {
+          querySnapshot.forEach((doc) => {
+            tests = tests.map((test) => {
+              let progress = -1;
+
+              if (test.id === doc.data().testId) {
+                progress = doc.data().progress;
+              }
+
+              return {
+                ...test,
+                progress
+              };
+            });
+
+            commit('setTests', tests);
+          });
+        }
       });
   },
   saveTest({ commit }, test) {
@@ -101,34 +139,17 @@ export default {
         });
       });
   },
-  setProblemAnswer({ commit }, { userId, testId, answerObj, correctAnswers }) {
+  setResultToTest({ commit }, resultTest) {
     const db = firebase.firestore(),
-      resultsCollection = db.collection('results');
-
-    let docRef = resultsCollection.doc(`${userId}_${testId}`);
+      resultsCollection = db.collection('results'),
+      userId = resultTest.userId,
+      testId = resultTest.testId,
+      docRef = resultsCollection.doc(`${userId}_${testId}`);
 
     return docRef
-      .get()
-      .then((doc) => {
-        let answers = new Array(correctAnswers.length).fill(-1);
-
-        if (doc.exists) {
-          answers = doc.data().answers;
-        }
-
-        answers[answerObj.problemIndex] = answerObj.value;
-
-        const completeAnswers = answers.filter((answer) => answer === -1)
-            .length,
-          test = {
-            testId,
-            userId,
-            answers,
-            progress: Math.floor((1 - completeAnswers / answers.length) * 100),
-            correctAnswers
-          };
-
-        return docRef.set(test);
+      .set(resultTest)
+      .then(() => {
+        commit('setResultToTest', resultTest);
       })
       .catch((error) => {
         commit('setAlert', {
@@ -162,6 +183,53 @@ export default {
           show: true,
           color: '#FF0000',
           message: `Eroare! Testul nu a fost sters! ${error}`
+        });
+      });
+  },
+  getResultToTest({ commit }, { userId, testId, correctAnswers }) {
+    const db = firebase.firestore(),
+      resultsCollection = db.collection('results');
+
+    let docRef = resultsCollection.doc(`${userId}_${testId}`);
+
+    return docRef
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          commit('setResultToTest', doc.data());
+        } else {
+          const answers = new Array(correctAnswers.length).fill(-1),
+            initialAnswers = new Array(correctAnswers.length).fill(-1),
+            grade = -1,
+            resultTest = {
+              testId,
+              userId,
+              initialAnswers,
+              answers,
+              grade,
+              progress: 0,
+              correctAnswers
+            };
+
+          docRef
+            .set(resultTest)
+            .then(() => {
+              commit('setResultToTest', resultTest);
+            })
+            .catch((error) => {
+              commit('setAlert', {
+                show: true,
+                color: '#FF0000',
+                message: `Eroare! ${error}`
+              });
+            });
+        }
+      })
+      .catch((error) => {
+        commit('setAlert', {
+          show: true,
+          color: '#FF0000',
+          message: `Eroare! ${error}`
         });
       });
   },
