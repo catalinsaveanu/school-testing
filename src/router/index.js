@@ -65,7 +65,7 @@ router.beforeEach((to, from, next) => {
   const { currentUser } = firebase.auth(),
     // eslint-disable-next-line
     requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
-  debugger;
+
   if (requiresAuth && !currentUser) {
     next('login');
   } else if (!requiresAuth && currentUser) {
