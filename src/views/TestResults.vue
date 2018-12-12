@@ -17,7 +17,9 @@
         >Cautarea dupa "{{ search }}" nu a returnat nici un rezultat.</v-alert>
       </v-data-table>
       <v-card-actions class="login-btns-container">
-        <v-btn color="primary" @click="goBack">Inapoi</v-btn>
+        <v-btn color="primary" @click="goBack" round>
+          <v-icon dark left>arrow_back</v-icon>Inapoi
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-flex>

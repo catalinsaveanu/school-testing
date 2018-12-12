@@ -4,8 +4,7 @@
       <v-toolbar dark color="primary">
         <v-toolbar-title>Conectare</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-tooltip right>
-        </v-tooltip>
+        <v-tooltip right></v-tooltip>
       </v-toolbar>
       <v-card-text>
         <v-form>
@@ -20,8 +19,7 @@
             type="text"
             @input="$v.email.$touch()"
             @blur="$v.email.$touch()"
-          >
-          </v-text-field>
+          ></v-text-field>
           <v-text-field
             v-model="password"
             :error-messages="passwordErrors"
@@ -33,14 +31,15 @@
             type="password"
             @input="$v.password.$touch()"
             @blur="$v.password.$touch()"
-          >
-          </v-text-field>
+          ></v-text-field>
         </v-form>
       </v-card-text>
       <v-card-actions class="login-btns-container">
-        <p>Nu ai un cont? Poti sa-ti <router-link to="/sign-up">creezi unul</router-link></p>
+        <p>Nu ai un cont? Poti sa-ti
+          <router-link to="/sign-up">creezi unul</router-link>
+        </p>
         <v-spacer></v-spacer>
-        <v-btn color="primary" @click="submit">Conectare</v-btn>
+        <v-btn color="primary" @click="submit" round>Conectare</v-btn>
       </v-card-actions>
     </v-card>
   </v-flex>
@@ -103,12 +102,14 @@ export default {
         // do your submit logic here
         this.submitStatus = 'PENDING';
 
-        this.$store.dispatch('login', {
-          email: this.email,
-          password: this.password
-        }).then(() => {
-          this.$router.replace('dashboard');
-        });
+        this.$store
+          .dispatch('login', {
+            email: this.email,
+            password: this.password
+          })
+          .then(() => {
+            this.$router.replace('dashboard');
+          });
       }
     }
   }
@@ -116,13 +117,13 @@ export default {
 </script>
 
 <style scoped>
-  .v-card__actions.login-btns-container {
-    padding: 0 16px 16px;
-  }
-  .login-btns-container .spacer {
-    margin: 0 10px;
-  }
-  .v-text-field__details {
-    padding-bottom: 5px;
-  }
+.v-card__actions.login-btns-container {
+  padding: 0 16px 16px;
+}
+.login-btns-container .spacer {
+  margin: 0 10px;
+}
+.v-text-field__details {
+  padding-bottom: 5px;
+}
 </style>

@@ -4,54 +4,42 @@
       <v-layout fill-height column>
         <v-flex fluid>
           <v-flex xs12 lg6>
-              <v-menu
-                  ref="menu1"
-                  :close-on-content-click="false"
-                  v-model="menu1"
-                  :nudge-right="40"
-                  lazy
-                  transition="scale-transition"
-                  offset-y
-                  full-width
-                  max-width="290px"
-                  min-width="290px"
-              >
-                  <v-text-field
-                    slot="activator"
-                    v-model="date"
-                    label="Data testului"
-                    readonly
-                  ></v-text-field>
-                  <v-date-picker v-model="date" first-day-of-week="1" @input="menu1 = false" locale="ro-ro"></v-date-picker>
-              </v-menu>
+            <v-menu
+              ref="menu1"
+              :close-on-content-click="false"
+              v-model="menu1"
+              :nudge-right="40"
+              lazy
+              transition="scale-transition"
+              offset-y
+              full-width
+              max-width="290px"
+              min-width="290px"
+            >
+              <v-text-field slot="activator" v-model="date" label="Data testului" readonly></v-text-field>
+              <v-date-picker
+                v-model="date"
+                first-day-of-week="1"
+                @input="menu1 = false"
+                locale="ro-ro"
+              ></v-date-picker>
+            </v-menu>
           </v-flex>
-          <v-select
-            v-model="subject"
-            :items="subjects"
-            label="Materia"
-            required
-          ></v-select>
-          <v-text-field
-            v-model="description"
-            label="Descriere"
-            required
-          ></v-text-field>
-          <v-checkbox
+          <v-select v-model="subject" :items="subjects" label="Materia" required></v-select>
+          <v-text-field v-model="description" label="Titlu" required></v-text-field>
+          <v-switch
+            color="pink"
+            :label="`Stare test: ${active ? 'activ' : 'inactiv'}`"
             v-model="active"
-            label="Activ"
-          ></v-checkbox>
+          ></v-switch>
         </v-flex>
         <v-toolbar flat color="white">
           <v-toolbar-title>Probleme</v-toolbar-title>
-          <v-divider
-            class="mx-2"
-            inset
-            vertical
-          ></v-divider>
+          <v-divider class="mx-2" inset vertical></v-divider>
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="600px">
-            <v-btn fab dark color="indigo" slot="activator" class="mb-2">
-              <v-icon dark>add</v-icon>
+            <v-btn color="pink" slot="activator" class="mb-2" round dark>Adauga Problema
+              <v-icon dark right>add_circle</v-icon>
             </v-btn>
             <v-card>
               <v-card-title>
@@ -62,30 +50,30 @@
                 <v-container grid-list-md>
                   <v-layout wrap>
                     <v-flex xs12>
-                      <v-text-field label="Intrebare*" required v-model="editedItem.question"></v-text-field>
+                      <v-textarea outline label="Intrebare" required v-model="editedItem.question"></v-textarea>
                     </v-flex>
-                    <v-radio-group v-model="editedItem.correctAnswer" row required >
-                      <v-flex class="radio-cell xs12 sm6 md6 ">
+                    <v-radio-group v-model="editedItem.correctAnswer" row required>
+                      <v-flex class="radio-cell xs12 sm6 md6">
                         <v-layout align-center>
-                          <v-radio value="0"></v-radio>
+                          <v-radio value="0" color="teal"></v-radio>
                           <v-text-field v-model="editedItem.answerA" label="(A)"></v-text-field>
                         </v-layout>
                       </v-flex>
-                      <v-flex class="radio-cell xs12 sm6 md6 ">
+                      <v-flex class="radio-cell xs12 sm6 md6">
                         <v-layout align-center>
-                          <v-radio value="1"></v-radio>
+                          <v-radio value="1" color="teal"></v-radio>
                           <v-text-field v-model="editedItem.answerB" label="(B)"></v-text-field>
                         </v-layout>
                       </v-flex>
-                      <v-flex class="radio-cell xs12 sm6 md6 ">
+                      <v-flex class="radio-cell xs12 sm6 md6">
                         <v-layout align-center>
-                          <v-radio value="2"></v-radio>
+                          <v-radio value="2" color="teal"></v-radio>
                           <v-text-field v-model="editedItem.answerC" label="(C)"></v-text-field>
                         </v-layout>
                       </v-flex>
-                      <v-flex class="radio-cell xs12 sm6 md6 ">
+                      <v-flex class="radio-cell xs12 sm6 md6">
                         <v-layout align-center>
-                          <v-radio value="3"></v-radio>
+                          <v-radio value="3" color="teal"></v-radio>
                           <v-text-field v-model="editedItem.answerD" label="(D)"></v-text-field>
                         </v-layout>
                       </v-flex>
@@ -96,18 +84,13 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-                <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
+                <v-btn color="error" flat round @click.native="close">Cancel</v-btn>
+                <v-btn color="success" flat round @click.native="save">Save</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
         </v-toolbar>
-        <v-data-table
-          :headers="headers"
-          :items="problems"
-          hide-actions
-          class="elevation-1"
-        >
+        <v-data-table :headers="headers" :items="problems" hide-actions class="elevation-1">
           <template slot="items" slot-scope="props">
             <td>{{ props.item.position }}.</td>
             <td>{{ props.item.question }}</td>
@@ -117,29 +100,23 @@
             <td>{{ props.item.answerD }}</td>
             <td class="text-xs-center">{{ props.item.correctAnswer }}</td>
             <td class="justify-center layout align-center">
-              <v-icon
-                small
-                class="mr-2"
-                @click="editItem(props.item)"
-              >
-                edit
-              </v-icon>
-              <v-icon
-                small
-                @click="deleteItem(props.item)"
-              >
-                delete
-              </v-icon>
+              <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
+              <v-icon small @click="deleteItem(props.item)">delete</v-icon>
             </td>
           </template>
-          <template slot="no-data">
-            Nu a fost adaugata nici o problema. Apasa pe butonul de mai sus pentru a adauga o problema.
-          </template>
+          <template
+            slot="no-data"
+          >Nu a fost adaugata nici o problema. Apasa pe butonul de mai sus pentru a adauga o problema.</template>
         </v-data-table>
         <v-spacer column></v-spacer>
         <v-flex>
-          <v-btn color="error" @click="cancel">Renunta</v-btn>
-          <v-btn color="success" @click="submit">{{submitTextBtn}}</v-btn>
+          <v-btn color="error" @click="cancel" round>Renunta
+            <v-icon dark right>remove_circle</v-icon>
+          </v-btn>
+          <v-btn color="success" @click="submit" round>
+            {{submitTextBtn}}
+            <v-icon dark right>check_circle</v-icon>
+          </v-btn>
         </v-flex>
       </v-layout>
     </form>

@@ -2,7 +2,11 @@
   <v-flex>
     <v-card>
       <v-card-title v-if="user.role === 'admin'">
-        <v-btn color="success" @click="addTest()">Adauga test</v-btn>
+        <a @click="addTest()" class="d-inline-flex align-center">
+          <v-btn color="pink" fab small dark>
+            <v-icon>add</v-icon>
+          </v-btn>Adauga test
+        </a>
         <v-spacer></v-spacer>
         <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
       </v-card-title>
@@ -32,7 +36,7 @@
         >Your search for "{{ search }}" found no results.</v-alert>
       </v-data-table>
       <v-card-actions class="login-btns-container">
-        <v-btn color="primary" @click="logout">Deconectare</v-btn>
+        <v-btn color="primary" @click="logout" round>Deconectare</v-btn>
       </v-card-actions>
     </v-card>
   </v-flex>

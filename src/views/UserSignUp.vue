@@ -4,8 +4,7 @@
       <v-toolbar dark color="primary">
         <v-toolbar-title>Inregistrare</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-tooltip right>
-        </v-tooltip>
+        <v-tooltip right></v-tooltip>
       </v-toolbar>
       <v-card-text>
         <v-form>
@@ -19,8 +18,8 @@
             required
             type="text"
             @input="$v.name.$touch()"
-            @blur="$v.name.$touch()">
-          </v-text-field>
+            @blur="$v.name.$touch()"
+          ></v-text-field>
           <v-text-field
             v-model="email"
             :error-messages="emailErrors"
@@ -31,8 +30,8 @@
             required
             type="text"
             @input="$v.email.$touch()"
-            @blur="$v.email.$touch()">
-          </v-text-field>
+            @blur="$v.email.$touch()"
+          ></v-text-field>
           <v-text-field
             v-model="password"
             :error-messages="passwordErrors"
@@ -43,8 +42,8 @@
             required
             type="password"
             @input="$v.password.$touch()"
-            @blur="$v.password.$touch()">
-          </v-text-field>
+            @blur="$v.password.$touch()"
+          ></v-text-field>
           <v-text-field
             v-model="repeatPassword"
             :error-messages="repeatPasswordErrors"
@@ -55,14 +54,16 @@
             required
             type="password"
             @input="$v.repeatPassword.$touch()"
-            @blur="$v.repeatPassword.$touch()">
-          </v-text-field>
+            @blur="$v.repeatPassword.$touch()"
+          ></v-text-field>
         </v-form>
       </v-card-text>
       <v-card-actions class="login-btns-container">
-        <p>Ai un cont deja? Te poti conecta <router-link to="/login">aici</router-link></p>
+        <p>Ai un cont deja? Te poti conecta
+          <router-link to="/login">aici</router-link>
+        </p>
         <v-spacer></v-spacer>
-        <v-btn color="primary" @click="submit">Inregistreaza-te</v-btn>
+        <v-btn color="primary" @click="submit" round>Inregistreaza-te</v-btn>
       </v-card-actions>
     </v-card>
   </v-flex>
@@ -131,7 +132,11 @@ export default {
       }
 
       if (!this.$v.password.minLength) {
-        errors.push(`Parola trebuie sa contina mininim ${this.$v.password.$params.minLength.min} caractere.`);
+        const errorMsg = `Parola trebuie sa contina mininim ${
+          this.$v.password.$params.minLength.min
+        } caractere.`;
+
+        errors.push(errorMsg);
       }
 
       return errors;
@@ -159,14 +164,16 @@ export default {
         // do your submit logic here
         this.submitStatus = 'PENDING';
 
-        this.$store.dispatch('signup', {
-          email: this.email,
-          password: this.password,
-          name: this.name,
-          role: 'student'
-        }).then(() => {
-          this.$router.replace('dashboard');
-        });
+        this.$store
+          .dispatch('signup', {
+            email: this.email,
+            password: this.password,
+            name: this.name,
+            role: 'student'
+          })
+          .then(() => {
+            this.$router.replace('dashboard');
+          });
       }
     }
   }
@@ -174,14 +181,14 @@ export default {
 </script>
 
 <style scoped>
-  .v-card__actions.login-btns-container {
-    padding: 0 16px 16px
-  }
+.v-card__actions.login-btns-container {
+  padding: 0 16px 16px;
+}
 
-  .login-btns-container .spacer {
-    margin: 0 10px
-  }
-  .v-text-field__details {
-    padding-bottom: 5px
-  }
+.login-btns-container .spacer {
+  margin: 0 10px;
+}
+.v-text-field__details {
+  padding-bottom: 5px;
+}
 </style>
