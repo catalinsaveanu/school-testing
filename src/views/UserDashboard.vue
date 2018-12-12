@@ -15,6 +15,7 @@
           <td class="text-xs-left">{{ props.item.active }}</td>
           <td class="text-xs-left" v-if="user.role !== 'admin'">{{ props.item.progress }}%</td>
           <td class="text-xs-left" v-if="user.role === 'admin'">
+            <v-icon small class="mr-2" @click="showTestResults(props.item)">assignment</v-icon>
             <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
             <v-icon small @click="deleteItem(props.item)">delete</v-icon>
           </td>
@@ -44,24 +45,6 @@ import router from './../router/';
 
 export default {
   name: 'UserDashboard',
-  mounted() {
-    if (!this.$store.getters.getUser.name) {
-      const { currentUser } = firebase.auth(),
-        db = firebase.firestore();
-
-      db.collection('users')
-        .doc(currentUser.uid)
-        .get()
-        .then((doc) => {
-          this.$store.dispatch('setUser', {
-            id: currentUser.uid,
-            ...doc.data()
-          });
-        });
-    }
-
-    this.$store.dispatch('loadTests');
-  },
   data() {
     return {
       text: '',
@@ -123,6 +106,9 @@ export default {
     },
     editItem(test) {
       router.push(`test/${test.id}`);
+    },
+    showTestResults(test) {
+      router.push(`results/${test.id}`);
     },
     addTest() {
       router.push('test');

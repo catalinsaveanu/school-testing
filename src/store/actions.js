@@ -59,7 +59,6 @@ export default {
       });
   },
   loadTests({ commit, state }) {
-    // eslint-disable-next-line
     const db = firebase.firestore(),
       user = state.user;
 
@@ -223,6 +222,58 @@ export default {
                 message: `Eroare! ${error}`
               });
             });
+        }
+      })
+      .catch((error) => {
+        commit('setAlert', {
+          show: true,
+          color: '#FF0000',
+          message: `Eroare! ${error}`
+        });
+      });
+  },
+  getUsersTestResults({ commit }, testId) {
+    const db = firebase.firestore(),
+      userCollection = db.collection('users');
+
+    let docs = [],
+      tests = [];
+
+    db.collection('results')
+      .where('testId', '==', testId)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const { userId, testId, progress, grade } = doc.data();
+
+          tests.push({ userId, testId, progress, grade });
+
+          docs.push(userCollection.doc(`${userId}`).get());
+        });
+
+        if (docs.length > 0) {
+          return Promise.all(docs);
+        } else {
+          commit('setUsersTestResults', []);
+        }
+      })
+      .then((querySnapshot) => {
+        if (querySnapshot) {
+          querySnapshot.forEach((doc) => {
+            tests = tests.map((test) => {
+              if (test.userId === doc.id) {
+                const { name } = doc.data();
+                return {
+                  name,
+                  ...test
+                };
+              } else {
+                return test;
+              }
+            });
+
+            commit('setUsersTestResults', tests);
+          });
         }
       })
       .catch((error) => {

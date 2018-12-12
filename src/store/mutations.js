@@ -17,6 +17,9 @@ export default {
   setResultToTest(state, test) {
     state.resultToTest = { ...test };
   },
+  setUsersTestResults(state, tests) {
+    state.usersTestResults = [...tests];
+  },
   setAlert(state, alert) {
     state.alert = alert;
   }

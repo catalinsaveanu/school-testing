@@ -4,6 +4,7 @@ import Router from 'vue-router';
 import UserDashboard from '@/views/UserDashboard.vue';
 import Test from '@/views/Test.vue';
 import TakeTest from '@/views/TakeTest.vue';
+import TestResults from '@/views/TestResults.vue';
 import UserLogin from '@/views/UserLogin.vue';
 import UserSignUp from '@/views/UserSignUp.vue';
 
@@ -54,6 +55,14 @@ const router = new Router({
       path: '/taketest/:id',
       name: 'TakeTest',
       component: TakeTest,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/results/:id',
+      name: 'TestResults',
+      component: TestResults,
       meta: {
         requiresAuth: true
       }
