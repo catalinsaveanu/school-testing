@@ -5,7 +5,7 @@ export default {
   resultToTest: {},
   alert: {
     show: false,
-    color: '#FF0000',
+    color: 'success',
     message: ''
   }
 };

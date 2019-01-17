@@ -22,12 +22,10 @@ export default {
           });
       })
       .catch((err) => {
-        console.log(err);
-      })
-      .then((doc) => {
-        commit('setUser', {
-          id: doc.id,
-          ...user
+        commit('setAlert', {
+          show: true,
+          color: 'error',
+          message: `Eroare! ${err.message}`
         });
       });
   },
@@ -40,21 +38,11 @@ export default {
           .auth()
           .signInWithEmailAndPassword(user.email, user.password);
       })
-      .then((firebaseUser) => {
-        const db = firebase.firestore();
-
-        return db
-          .collection('users')
-          .doc(firebaseUser.user.uid)
-          .get();
-      })
       .catch((err) => {
-        console.log(err);
-      })
-      .then((doc) => {
-        commit('setUser', {
-          id: doc.id,
-          ...doc.data()
+        commit('setAlert', {
+          show: true,
+          color: 'error',
+          message: `Eroare! Parola sau adresa de e-mail nu este corecta!`
         });
       });
   },
@@ -93,9 +81,9 @@ export default {
         if (querySnapshot) {
           querySnapshot.forEach((doc) => {
             tests = tests.map((test) => {
-              let progress = -1;
+              let progress = 0;
 
-              if (test.id === doc.data().testId) {
+              if (doc.data() && test.id === doc.data().testId) {
                 progress = doc.data().progress;
               }
 
@@ -126,14 +114,14 @@ export default {
       .then(() => {
         commit('setAlert', {
           show: true,
-          color: '#00FF00',
+          color: 'success',
           message: 'Testul a fost salvat!'
         });
       })
       .catch((error) => {
         commit('setAlert', {
           show: true,
-          color: '#FF0000',
+          color: 'error',
           message: `Eroare! Testul nu a fost salvat! ${error}`
         });
       });
@@ -153,7 +141,7 @@ export default {
       .catch((error) => {
         commit('setAlert', {
           show: true,
-          color: '#FF0000',
+          color: 'error',
           message: `Eroare! Rezultatul nu a fost salvat! ${error}`
         });
       });
@@ -172,7 +160,7 @@ export default {
 
         commit('setAlert', {
           show: true,
-          color: '#00FF00',
+          color: 'success',
           message: 'Testul a fost sters!'
         });
         // eslint-disable-next-line
@@ -180,7 +168,7 @@ export default {
       .catch((error) => {
         commit('setAlert', {
           show: true,
-          color: '#FF0000',
+          color: 'error',
           message: `Eroare! Testul nu a fost sters! ${error}`
         });
       });
@@ -199,7 +187,7 @@ export default {
         } else {
           const answers = new Array(correctAnswers.length).fill(-1),
             initialAnswers = new Array(correctAnswers.length).fill(-1),
-            grade = -1,
+            grade = 0,
             resultTest = {
               testId,
               userId,
@@ -218,7 +206,7 @@ export default {
             .catch((error) => {
               commit('setAlert', {
                 show: true,
-                color: '#FF0000',
+                color: 'error',
                 message: `Eroare! ${error}`
               });
             });
@@ -227,7 +215,7 @@ export default {
       .catch((error) => {
         commit('setAlert', {
           show: true,
-          color: '#FF0000',
+          color: 'error',
           message: `Eroare! ${error}`
         });
       });
@@ -279,7 +267,7 @@ export default {
       .catch((error) => {
         commit('setAlert', {
           show: true,
-          color: '#FF0000',
+          color: 'error',
           message: `Eroare! ${error}`
         });
       });

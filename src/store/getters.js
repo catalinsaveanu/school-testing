@@ -7,8 +7,5 @@ export default {
   },
   getTest: (state) => (testId) => {
     return state.tests.find((test) => test.id === testId) || {};
-  },
-  getAlert(state) {
-    return state.alert;
   }
 };

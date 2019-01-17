@@ -128,7 +128,9 @@ export default {
     },
     answerClicked(answer) {
       let answers = this.resultToTest.answers,
-        initialAnswers = this.resultToTest.initialAnswers;
+        initialAnswers = this.resultToTest.initialAnswers,
+        grade = 0,
+        progress = 0;
 
       if (initialAnswers[this.currentProblem] === -1) {
         initialAnswers[this.currentProblem] = answer;
@@ -136,8 +138,22 @@ export default {
 
       answers[this.currentProblem] = answer;
 
+      initialAnswers.forEach((answer, index) => {
+        if (answer !== -1) {
+          progress++;
+          if (answer === this.problems[index].correctAnswer) {
+            grade++;
+          }
+        }
+      });
+
+      progress = (progress / this.problems.length) * 100;
+      grade = (grade / this.problems.length) * 100;
+
       const sendData = {
         ...this.resultToTest,
+        progress,
+        grade,
         answers,
         initialAnswers
       };

@@ -83,7 +83,7 @@ router.beforeEach((to, from, next) => {
     if (
       !store.getters.getUser.name &&
       to.fullPath !== '/login' &&
-      to.fullPath !== 'sign-up'
+      to.fullPath !== '/sign-up'
     ) {
       const db = firebase.firestore();
 

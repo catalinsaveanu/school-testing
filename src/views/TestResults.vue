@@ -5,7 +5,7 @@
       <v-data-table :headers="headers" :items="tests" :search="search">
         <template slot="items" slot-scope="props">
           <td class="text-xs-left">{{ props.item.name }}</td>
-          <td class="text-xs-left">{{ props.item.progress }}</td>
+          <td class="text-xs-left">{{ props.item.progress }}%</td>
           <td class="text-xs-left">{{ props.item.grade }}</td>
         </template>
         <template slot="no-data">Inca nici un elev nu a inceput acest test.</template>

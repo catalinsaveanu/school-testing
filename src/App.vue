@@ -2,22 +2,16 @@
   <div id="app">
     <v-app>
       <v-content>
-      <v-snackbar
-        v-model="showAlert"
-        :color="alertColor"
-        :multi-line="false"
-        :timeout="0"
-        :vertical="true"
-      >
-        {{ alertMessage }}
-        <v-btn
-          dark
-          flat
-          @click="closeAlert"
+        <v-snackbar
+          v-model="alert.show"
+          :color="alert.color"
+          :multi-line="false"
+          :timeout="4000"
+          :vertical="false"
         >
-          Inchide
-        </v-btn>
-      </v-snackbar>
+          {{ alert.message }}
+          <v-btn dark flat @click.native="closeAlert">Inchide</v-btn>
+        </v-snackbar>
         <v-container fluid fill-height>
           <v-layout align-center justify-center>
             <router-view></router-view>
@@ -29,18 +23,12 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   name: 'app',
   computed: {
-    showAlert() {
-      return this.$store.getters.getAlert.show;
-    },
-    alertColor() {
-      return this.$store.getters.getAlert.color;
-    },
-    alertMessage() {
-      return this.$store.getters.getAlert.message;
-    }
+    ...mapState(['alert'])
   },
   methods: {
     closeAlert() {
