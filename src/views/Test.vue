@@ -263,7 +263,6 @@ export default {
     submit() {
       const problems = [...this.problems],
         test = {
-          id: this.testId,
           active: this.active,
           date: firebase.firestore.Timestamp.fromDate(new Date(this.date)),
           deleted: false,
@@ -272,9 +271,18 @@ export default {
           problems
         };
 
-      this.$store.dispatch('saveTest', test).then(() => {
-        this.$router.go(-1);
-      });
+      if (this.testId) {
+        test.id = this.testId;
+      }
+
+      this.$store
+        .dispatch('saveTest', test)
+        .then(() => {
+          return this.$store.dispatch('loadTests');
+        })
+        .then(() => {
+          this.$router.go(-1);
+        });
     }
   }
 };
