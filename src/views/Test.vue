@@ -55,25 +55,25 @@
                     <v-radio-group v-model="editedItem.correctAnswer" row required>
                       <v-flex class="radio-cell xs12 sm6 md6">
                         <v-layout align-center>
-                          <v-radio value="0" color="teal"></v-radio>
+                          <v-radio :value="0" color="teal"></v-radio>
                           <v-text-field v-model="editedItem.answerA" label="(A)"></v-text-field>
                         </v-layout>
                       </v-flex>
                       <v-flex class="radio-cell xs12 sm6 md6">
                         <v-layout align-center>
-                          <v-radio value="1" color="teal"></v-radio>
+                          <v-radio :value="1" color="teal"></v-radio>
                           <v-text-field v-model="editedItem.answerB" label="(B)"></v-text-field>
                         </v-layout>
                       </v-flex>
                       <v-flex class="radio-cell xs12 sm6 md6">
                         <v-layout align-center>
-                          <v-radio value="2" color="teal"></v-radio>
+                          <v-radio :value="2" color="teal"></v-radio>
                           <v-text-field v-model="editedItem.answerC" label="(C)"></v-text-field>
                         </v-layout>
                       </v-flex>
                       <v-flex class="radio-cell xs12 sm6 md6">
                         <v-layout align-center>
-                          <v-radio value="3" color="teal"></v-radio>
+                          <v-radio :value="3" color="teal"></v-radio>
                           <v-text-field v-model="editedItem.answerD" label="(D)"></v-text-field>
                         </v-layout>
                       </v-flex>
@@ -131,7 +131,7 @@ import confirm from 'vuetify';
 import router from './../router/';
 
 export default {
-  name: 'UserDashboard',
+  name: 'Test',
   components: {},
   mounted() {
     if (this.testId) {
@@ -244,6 +244,8 @@ export default {
     },
 
     save() {
+      this.editedItem.correctAnswer = parseInt(this.editedItem.correctAnswer);
+
       if (this.editedIndex > -1) {
         Object.assign(this.problems[this.editedIndex], this.editedItem);
       } else {

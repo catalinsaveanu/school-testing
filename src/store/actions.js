@@ -81,15 +81,18 @@ export default {
         if (querySnapshot) {
           querySnapshot.forEach((doc) => {
             tests = tests.map((test) => {
-              let progress = 0;
+              let progress = 0,
+                grade = 0;
 
               if (doc.data() && test.id === doc.data().testId) {
                 progress = doc.data().progress;
+                grade = doc.data().grade;
               }
 
               return {
                 ...test,
-                progress
+                progress,
+                grade
               };
             });
 
@@ -271,6 +274,9 @@ export default {
           message: `Eroare! ${error}`
         });
       });
+  },
+  updateToolbarVisibility({ commit }, visibility) {
+    commit('updateToolbarVisibility', visibility);
   },
   updateAlert({ commit }, alert) {
     commit('setAlert', alert);

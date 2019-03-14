@@ -72,6 +72,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   const { currentUser } = firebase.auth(),
+    isLoggedPage = to.fullPath !== '/login' && to.fullPath !== '/sign-up',
     // eslint-disable-next-line
     requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
 
@@ -80,11 +81,7 @@ router.beforeEach((to, from, next) => {
   } else if (!requiresAuth && currentUser) {
     next('dashboard');
   } else {
-    if (
-      !store.getters.getUser.name &&
-      to.fullPath !== '/login' &&
-      to.fullPath !== '/sign-up'
-    ) {
+    if (!store.getters.getUser.name && isLoggedPage) {
       const db = firebase.firestore();
 
       db.collection('users')
@@ -102,6 +99,10 @@ router.beforeEach((to, from, next) => {
       next();
     }
   }
+
+  console.log('updateToolbarVisibility', to.fullPath);
+
+  store.dispatch('updateToolbarVisibility', isLoggedPage);
 });
 
 export default router;

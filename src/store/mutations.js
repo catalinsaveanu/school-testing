@@ -22,5 +22,8 @@ export default {
   },
   setAlert(state, alert) {
     state.alert = alert;
+  },
+  updateToolbarVisibility(state, visibility) {
+    state.showToolbar = visibility;
   }
 };

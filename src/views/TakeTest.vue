@@ -66,7 +66,7 @@ import confirm from 'vuetify';
 import router from './../router/';
 
 export default {
-  name: 'UserDashboard',
+  name: 'TakeTest',
   components: {},
   mounted() {
     const testId = this.$route.params.id,
