@@ -3,7 +3,7 @@
     <v-flex md4 v-for="test in tests" :key="test.id">
       <v-card width="300px">
         <v-img :src="images.math1" width="300px" height="200px">
-          <div class="headline subject-text" v-text="test.subject"></div>
+          <div class="headline subject-text" v-text="test.description"></div>
         </v-img>
 
         <v-card-actions>
@@ -109,8 +109,7 @@ export default {
 
 <style scoped>
 .subject-text {
-  background-color: rgba(255, 255, 255, 1);
+  background-color: rgba(255, 255, 255, 0.7);
   color: black;
-  opacity: 0.5;
 }
 </style>
