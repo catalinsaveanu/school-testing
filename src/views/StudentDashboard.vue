@@ -2,7 +2,7 @@
   <v-layout row wrap fill-height align-center justify-center>
     <v-flex md4 v-for="test in tests" :key="test.id">
       <v-card width="300px">
-        <v-img :src="images.math1" width="300px" height="200px">
+        <v-img :src="images[test.subject]" width="300px" height="200px">
           <div class="headline subject-text" v-text="test.description"></div>
         </v-img>
 
@@ -12,9 +12,9 @@
             :width="6"
             :value="test.grade"
             color="brown"
-          >{{ test.grade / 10 }}</v-progress-circular>
+          >{{ test.grade }}</v-progress-circular>
           <v-progress-circular
-            class="ml-1"
+            class="ml-2"
             :size="43"
             :width="6"
             :value="test.progress"
@@ -43,7 +43,8 @@ export default {
       search: '',
       headers: this.getHeaders(),
       images: {
-        math1: require('./../assets/math2.jpg')
+        matematica: require('./../assets/matematica.jpg'),
+        romana: require('./../assets/romana.jpg')
       }
     };
   },
@@ -109,7 +110,9 @@ export default {
 
 <style scoped>
 .subject-text {
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 1);
   color: black;
+  mix-blend-mode: soft-light;
+  padding-left: 10px;
 }
 </style>

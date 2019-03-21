@@ -140,6 +140,10 @@ export default {
       .set(resultTest)
       .then(() => {
         commit('setResultToTest', resultTest);
+        commit('updateTest', {
+          id: testId,
+          grade: resultTest.grade
+        });
       })
       .catch((error) => {
         commit('setAlert', {

@@ -113,7 +113,9 @@ export default {
       this.currentProblem = this.currentProblem + 1;
       if (this.currentProblem > this.problems.length - 1) {
         this.currentProblem = this.problems.length - 1;
+        router.push('/testfinish');
       }
+
       this.userAnswers = -1;
     },
     prev() {
@@ -138,7 +140,7 @@ export default {
 
       answers[this.currentProblem] = answer;
 
-      initialAnswers.forEach((answer, index) => {
+      answers.forEach((answer, index) => {
         if (answer !== -1) {
           progress++;
           if (answer === this.problems[index].correctAnswer) {
@@ -158,7 +160,7 @@ export default {
         initialAnswers
       };
 
-      this.$store.dispatch('setResultToTest', sendData);
+      this.$store.dispatch('setResultToTest', sendData).then(() => this.next());
     },
     answerColor(answer) {
       if (Object.keys(this.resultToTest).length === 0) {

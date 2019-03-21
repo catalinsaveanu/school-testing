@@ -4,6 +4,7 @@ import Router from 'vue-router';
 import UserDashboard from '@/views/UserDashboard.vue';
 import Test from '@/views/Test.vue';
 import TakeTest from '@/views/TakeTest.vue';
+import TestFinish from '@/views/TestFinish.vue';
 import TestResults from '@/views/TestResults.vue';
 import UserLogin from '@/views/UserLogin.vue';
 import UserSignUp from '@/views/UserSignUp.vue';
@@ -60,6 +61,14 @@ const router = new Router({
       }
     },
     {
+      path: '/testfinish',
+      name: 'TestFinish',
+      component: TestFinish,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
       path: '/results/:id',
       name: 'TestResults',
       component: TestResults,
@@ -99,8 +108,6 @@ router.beforeEach((to, from, next) => {
       next();
     }
   }
-
-  console.log('updateToolbarVisibility', to.fullPath);
 
   store.dispatch('updateToolbarVisibility', isLoggedPage);
 });

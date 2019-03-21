@@ -9,10 +9,13 @@ export default {
     state.tests = [...state.tests.filter((element) => element.id !== test.id)];
   },
   updateTest(state, test) {
-    state.tests = [
-      ...state.tests.filter((element) => element.id !== test.id),
-      test
-    ];
+    state.tests = state.tests.map((element) => {
+      if (element.id === test.id) {
+        return Object.assign({}, element, test);
+      } else {
+        return element;
+      }
+    });
   },
   setResultToTest(state, test) {
     state.resultToTest = { ...test };

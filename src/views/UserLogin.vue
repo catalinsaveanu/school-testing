@@ -108,7 +108,7 @@ export default {
             password: this.password
           })
           .then(() => {
-            this.$router.replace('dashboard');
+            this.$router.replace('/dashboard');
           });
       }
     }
