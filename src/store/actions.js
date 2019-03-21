@@ -279,9 +279,6 @@ export default {
         });
       });
   },
-  updateToolbarVisibility({ commit }, visibility) {
-    commit('updateToolbarVisibility', visibility);
-  },
   updateAlert({ commit }, alert) {
     commit('setAlert', alert);
   }

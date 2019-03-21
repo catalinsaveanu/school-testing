@@ -3,7 +3,6 @@ export default {
   tests: [],
   usersTestResults: [],
   resultToTest: {},
-  showToolbar: false,
   alert: {
     show: false,
     color: 'success',

@@ -35,9 +35,6 @@
           icon="warning"
         >Your search for "{{ search }}" found no results.</v-alert>
       </v-data-table>
-      <v-card-actions class="login-btns-container">
-        <v-btn color="primary" @click="logout" round>Deconectare</v-btn>
-      </v-card-actions>
     </v-card>
   </v-flex>
 </template>
@@ -94,14 +91,6 @@ export default {
         .toDate()
         .toISOString()
         .replace(/T.*/g, '');
-    },
-    logout() {
-      firebase
-        .auth()
-        .signOut()
-        .then(() => {
-          this.$router.replace('/login');
-        });
     },
     deleteItem(test) {
       if (confirm('Esti sigur ca doresti sa stergi acest test?')) {

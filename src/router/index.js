@@ -108,8 +108,6 @@ router.beforeEach((to, from, next) => {
       next();
     }
   }
-
-  store.dispatch('updateToolbarVisibility', isLoggedPage);
 });
 
 export default router;

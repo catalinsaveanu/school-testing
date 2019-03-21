@@ -1,8 +1,9 @@
 <template>
   <div id="app">
     <v-app>
-      <v-toolbar v-if="showToolbar">
-        <v-btn color="primary" @click="logout" dark round>Exit
+      <v-toolbar v-if="user.name">
+        <v-btn color="primary" @click="logout" dark round>
+          Deconectare
           <v-icon right>last_page</v-icon>
         </v-btn>
 
@@ -48,7 +49,7 @@ import 'firebase/firestore';
 export default {
   name: 'app',
   computed: {
-    ...mapState(['alert', 'showToolbar', 'user'])
+    ...mapState(['alert', 'user'])
   },
   methods: {
     logout() {
@@ -56,7 +57,7 @@ export default {
         .auth()
         .signOut()
         .then(() => {
-          this.$router.replace('/login');
+          this.$router.go({ path: this.$router.path });
         });
     },
     closeAlert() {
